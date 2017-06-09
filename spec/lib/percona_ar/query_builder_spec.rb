@@ -65,5 +65,35 @@ RSpec.describe PerconaAr::QueryBuilder do
           and_call_original
       end
     end
+
+    context "when sql has create index statement" do
+      let(:sql) { "CREATE INDEX `index_user` ON `users` (`id`)" }
+
+      it "adds ADD INDEX statement" do
+        is_expected.to receive(:new).
+          with("users", "ADD  INDEX index_user(`id`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has create index with multiple column index statement" do
+      let(:sql) { "CREATE INDEX `index_user` ON `users` (`id`, `name`)" }
+
+      it "adds ADD INDEX statement with multiple column" do
+        is_expected.to receive(:new).
+          with("users", "ADD  INDEX index_user(`id`, `name`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has create index with PRIMARY statement" do
+      let(:sql) { "CREATE PRIMARY INDEX `index_user` ON `users` (`id`)" }
+
+      it "adds ADD PRIMARY INDEX statement" do
+        is_expected.to receive(:new).
+          with("users", "ADD PRIMARY INDEX index_user(`id`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
   end
 end
