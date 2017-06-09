@@ -13,6 +13,8 @@ class PerconaAr::QueryBuilder
   def add(sql)
     if sql =~ /^ALTER TABLE `([^`]*)` (.*)/i
       @tables[$1.to_s] << get_sql_for($2)
+    elsif sql =~ /^CREATE ([^ ]*) *INDEX `([^`]*)` *ON `([^`]*)` \((.*)\)/i
+      @tables[$3.to_s] << get_sql_for_index($2, $4, $1)
     end
     self
   end
@@ -24,4 +26,7 @@ class PerconaAr::QueryBuilder
     cmd.gsub(/DROP/i, "DROP COLUMN")
   end
 
+  def get_sql_for_index(idx_name, col_name, option)
+    "ADD #{option} INDEX #{idx_name}(#{col_name})"
+  end
 end
