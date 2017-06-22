@@ -29,6 +29,18 @@ RSpec.describe PerconaAr::Connection do
       lib.execute(sql)
     end
 
+    it "uses percona tool when sql in an drop primary key statement" do
+      sql = "ALTER TABLE `users` DROP PRIMARY KEY"
+      expect(builder).to receive(:add).with(sql)
+      lib.execute(sql)
+    end
+
+    it "uses percona tool when sql in an add primary key statement" do
+      sql = "ALTER TABLE `users` ADD PRIMARY KEY(`foo`)"
+      expect(builder).to receive(:add).with(sql)
+      lib.execute(sql)
+    end
+
     it "uses ActiveRecord when sql is not an alter statement" do
       sql = "SHOW FIELDS FOR users"
       expect(builder).not_to receive(:add)

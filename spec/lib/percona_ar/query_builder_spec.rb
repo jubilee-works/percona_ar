@@ -66,6 +66,26 @@ RSpec.describe PerconaAr::QueryBuilder do
       end
     end
 
+    context "when sql has alter statement with ADD PRIMARY KEY" do
+      let(:sql) { "ALTER TABLE `users` ADD PRIMARY KEY(`foo`)" }
+
+      it "leaves sql unchanged" do
+        is_expected.to receive(:new).
+          with("users", "ADD PRIMARY KEY(`foo`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has alter statement with DROP PRIMARY KEY" do
+      let(:sql) { "ALTER TABLE `users` DROP PRIMARY KEY" }
+
+      it "leaves sql unchanged" do
+        is_expected.to receive(:new).
+          with("users", "DROP PRIMARY KEY", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
     context "when sql has create index statement" do
       let(:sql) { "CREATE INDEX `index_user` ON `users` (`id`)" }
 

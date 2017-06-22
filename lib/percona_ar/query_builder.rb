@@ -23,6 +23,7 @@ class PerconaAr::QueryBuilder
 
   def get_sql_for(cmd)
     return cmd unless cmd =~ /DROP/i && !(cmd =~ /COLUMN/i)
+    return cmd if cmd=~ /PRIMARY KEY/i
     cmd.gsub(/DROP/i, "DROP COLUMN")
   end
 
