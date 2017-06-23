@@ -41,7 +41,8 @@ RSpec.describe PerconaAr::QueryBuilder do
 
     context "when sql has alter statement" do
       let(:sql) { "alter table `users` `foo` `bar` varchar(36)" }
-      it { is_expected.to receive(:new).with("users", /foo.*bar/).
+      it { is_expected.to receive(:new).
+           with("users", /foo.*bar/, ActiveRecord::Base.connection).
            and_call_original }
 
     end
@@ -49,7 +50,8 @@ RSpec.describe PerconaAr::QueryBuilder do
       let(:sql) { "alter table `users` drop `foo`" }
 
       it "adds 'COLUMN' to drop statement in order to be valid for percona" do
-        is_expected.to receive(:new).with("users", /DROP COLUMN..foo/).
+        is_expected.to receive(:new).
+          with("users", /DROP COLUMN..foo/, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -58,7 +60,68 @@ RSpec.describe PerconaAr::QueryBuilder do
       let(:sql) { "alter table `users` drop column `foo`" }
 
       it "leaves sql unchanged" do
-        is_expected.to receive(:new).with("users", /drop column..foo/).
+        is_expected.to receive(:new).
+          with("users", /drop column..foo/, ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has alter statement with ADD PRIMARY KEY" do
+      let(:sql) { "ALTER TABLE `users` ADD PRIMARY KEY(`foo`)" }
+
+      it "leaves sql unchanged" do
+        is_expected.to receive(:new).
+          with("users", "ADD PRIMARY KEY(`foo`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has alter statement with DROP PRIMARY KEY" do
+      let(:sql) { "ALTER TABLE `users` DROP PRIMARY KEY" }
+
+      it "leaves sql unchanged" do
+        is_expected.to receive(:new).
+          with("users", "DROP PRIMARY KEY", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has create index statement" do
+      let(:sql) { "CREATE INDEX `index_user` ON `users` (`id`)" }
+
+      it "adds ADD INDEX statement" do
+        is_expected.to receive(:new).
+          with("users", "ADD  INDEX index_user(`id`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has create index with multiple column index statement" do
+      let(:sql) { "CREATE INDEX `index_user` ON `users` (`id`, `name`)" }
+
+      it "adds ADD INDEX statement with multiple column" do
+        is_expected.to receive(:new).
+          with("users", "ADD  INDEX index_user(`id`, `name`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has create index with PRIMARY statement" do
+      let(:sql) { "CREATE PRIMARY INDEX `index_user` ON `users` (`id`)" }
+
+      it "adds ADD PRIMARY INDEX statement" do
+        is_expected.to receive(:new).
+          with("users", "ADD PRIMARY INDEX index_user(`id`)", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
+
+    context "when sql has drop index statement" do
+      let(:sql) { "DROP INDEX `index_user` ON `users`" }
+
+      it "adds ADD INDEX statement" do
+        is_expected.to receive(:new).
+          with("users", "DROP INDEX `index_user`", ActiveRecord::Base.connection).
           and_call_original
       end
     end
