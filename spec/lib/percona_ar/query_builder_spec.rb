@@ -115,5 +115,15 @@ RSpec.describe PerconaAr::QueryBuilder do
           and_call_original
       end
     end
+
+    context "when sql has drop index statement" do
+      let(:sql) { "DROP INDEX `index_user` ON `users`" }
+
+      it "adds ADD INDEX statement" do
+        is_expected.to receive(:new).
+          with("users", "DROP INDEX `index_user`", ActiveRecord::Base.connection).
+          and_call_original
+      end
+    end
   end
 end
