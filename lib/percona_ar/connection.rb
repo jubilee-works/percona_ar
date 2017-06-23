@@ -9,7 +9,7 @@ class PerconaAr::Connection < ActiveRecord::ConnectionAdapters::Mysql2Adapter
   end
 
   def execute(sql, name = nil)
-    return super unless sql =~ /^(ALTER TABLE|CREATE .*INDEX).*/
+    return super unless sql =~ /^(ALTER TABLE|CREATE .*INDEX|DROP INDEX).*/
     $query_builder.add sql
   end
 

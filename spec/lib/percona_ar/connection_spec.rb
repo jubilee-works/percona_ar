@@ -29,6 +29,12 @@ RSpec.describe PerconaAr::Connection do
       lib.execute(sql)
     end
 
+    it "uses percona tool when sql in an drop index statement" do
+      sql = "DROP INDEX `user_index` ON `users`"
+      expect(builder).to receive(:add).with(sql)
+      lib.execute(sql)
+    end
+
     it "uses ActiveRecord when sql is not an alter statement" do
       sql = "SHOW FIELDS FOR users"
       expect(builder).not_to receive(:add)
