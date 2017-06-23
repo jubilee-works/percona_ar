@@ -29,6 +29,12 @@ RSpec.describe PerconaAr::Connection do
       lib.execute(sql)
     end
 
+    it "uses percona tool when sql in an drop index statement" do
+      sql = "DROP INDEX `user_index` ON `users`"
+      expect(builder).to receive(:add).with(sql)
+      lib.execute(sql)
+    end
+
     it "uses percona tool when sql in an drop primary key statement" do
       sql = "ALTER TABLE `users` DROP PRIMARY KEY"
       expect(builder).to receive(:add).with(sql)
