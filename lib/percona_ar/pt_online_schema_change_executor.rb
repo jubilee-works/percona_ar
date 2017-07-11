@@ -6,14 +6,15 @@ class PerconaAr::PtOnlineSchemaChangeExecutor
 
   attr_accessor :sql, :table, :conn
 
-  def initialize(table, sql, conn = ActiveRecord::Base.connection)
+  def initialize(table, sql, opt = {}, conn = ActiveRecord::Base.connection)
     @table = table
     @sql = sql
+    @opt = opt
     @conn = conn
   end
 
   def call
-    sh %Q(#{boilerplate}#{suffix(table, sql)})
+    sh %Q(#{boilerplate}#{suffix(table, sql)}#{option})
   end
 
   private
@@ -24,6 +25,19 @@ class PerconaAr::PtOnlineSchemaChangeExecutor
 
   def boilerplate
     "pt-online-schema-change -u '#{config[:username]}' -h '#{config[:host]}' -p '#{config[:password]}' --alter "
+  end
+
+  def option
+    if @opt.present?
+      str = ''
+      str << " --critical-load #{@opt[:critical_load]}" if @opt[:critical_load]
+      str << " --max-load #{@opt[:max_load]}" if @opt[:max_load]
+      str << " --chunk-size #{@opt[:chunk_size]}" if @opt[:chunk_size]
+      str << " --chunk-time #{@opt[:chunk_time]}" if @opt[:chunk_time]
+      str
+    else
+      ''
+    end
   end
 
   def config

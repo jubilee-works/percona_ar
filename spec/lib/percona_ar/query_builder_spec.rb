@@ -42,7 +42,7 @@ RSpec.describe PerconaAr::QueryBuilder do
     context "when sql has alter statement" do
       let(:sql) { "alter table `users` `foo` `bar` varchar(36)" }
       it { is_expected.to receive(:new).
-           with("users", /foo.*bar/, ActiveRecord::Base.connection).
+           with("users", /foo.*bar/, {}, ActiveRecord::Base.connection).
            and_call_original }
 
     end
@@ -51,7 +51,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "adds 'COLUMN' to drop statement in order to be valid for percona" do
         is_expected.to receive(:new).
-          with("users", /DROP COLUMN..foo/, ActiveRecord::Base.connection).
+          with("users", /DROP COLUMN..foo/, {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "leaves sql unchanged" do
         is_expected.to receive(:new).
-          with("users", /drop column..foo/, ActiveRecord::Base.connection).
+          with("users", /drop column..foo/, {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -71,7 +71,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "leaves sql unchanged" do
         is_expected.to receive(:new).
-          with("users", "ADD PRIMARY KEY(`foo`)", ActiveRecord::Base.connection).
+          with("users", "ADD PRIMARY KEY(`foo`)", {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "leaves sql unchanged" do
         is_expected.to receive(:new).
-          with("users", "DROP PRIMARY KEY", ActiveRecord::Base.connection).
+          with("users", "DROP PRIMARY KEY", {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -91,7 +91,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "adds ADD INDEX statement" do
         is_expected.to receive(:new).
-          with("users", "ADD  INDEX index_user(`id`)", ActiveRecord::Base.connection).
+          with("users", "ADD  INDEX index_user(`id`)", {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -101,7 +101,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "adds ADD INDEX statement with multiple column" do
         is_expected.to receive(:new).
-          with("users", "ADD  INDEX index_user(`id`, `name`)", ActiveRecord::Base.connection).
+          with("users", "ADD  INDEX index_user(`id`, `name`)", {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -111,7 +111,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "adds ADD PRIMARY INDEX statement" do
         is_expected.to receive(:new).
-          with("users", "ADD PRIMARY INDEX index_user(`id`)", ActiveRecord::Base.connection).
+          with("users", "ADD PRIMARY INDEX index_user(`id`)", {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
@@ -121,7 +121,7 @@ RSpec.describe PerconaAr::QueryBuilder do
 
       it "adds ADD INDEX statement" do
         is_expected.to receive(:new).
-          with("users", "DROP INDEX `index_user`", ActiveRecord::Base.connection).
+          with("users", "DROP INDEX `index_user`", {}, ActiveRecord::Base.connection).
           and_call_original
       end
     end
