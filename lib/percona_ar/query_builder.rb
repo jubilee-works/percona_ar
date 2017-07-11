@@ -1,12 +1,13 @@
 class PerconaAr::QueryBuilder
-  def initialize(conn = ActiveRecord::Base.connection)
+  def initialize(opt = {}, conn = ActiveRecord::Base.connection)
     @tables = Hash.new {|h, k| h[k] = [] }
+    @opt = opt
     @conn = conn
   end
 
   def execute
     @tables.each do |table, snippets|
-      PerconaAr::PtOnlineSchemaChangeExecutor.new(table, snippets.join(", "), @conn).call
+      PerconaAr::PtOnlineSchemaChangeExecutor.new(table, snippets.join(", "), @opt, @conn).call
     end
   end
 
@@ -37,4 +38,3 @@ class PerconaAr::QueryBuilder
     "DROP INDEX `#{idx_name}`"
   end
 end
-
