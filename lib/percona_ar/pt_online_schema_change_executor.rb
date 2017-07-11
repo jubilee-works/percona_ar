@@ -28,12 +28,12 @@ class PerconaAr::PtOnlineSchemaChangeExecutor
   end
 
   def option
-    if option.present?
+    if @opt.present?
       str = ''
-      str << " --critical-load #{opt[:critical_load]}" if opt[:critical_load]
-      str << " --max-load #{opt[:max_load]}" if opt[:max_load]
-      str << " --chunk-size #{opt[:chunk_size]}" if opt[:chunk_size]
-      str << " --chunk-time #{opt[:chunk_time]}" if opt[:chunk_time]
+      str << " --critical-load #{@opt[:critical_load]}" if @opt[:critical_load]
+      str << " --max-load #{@opt[:max_load]}" if @opt[:max_load]
+      str << " --chunk-size #{@opt[:chunk_size]}" if @opt[:chunk_size]
+      str << " --chunk-time #{@opt[:chunk_time]}" if @opt[:chunk_time]
       str
     else
       ''

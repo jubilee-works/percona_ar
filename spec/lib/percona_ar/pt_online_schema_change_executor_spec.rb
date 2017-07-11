@@ -17,7 +17,7 @@ RSpec.describe PerconaAr::PtOnlineSchemaChangeExecutor do
     end
 
     context "has some option" do
-      let(:lib) { described_clas.new("users", sql, { critical_load: "Thread_running=100" }) }
+      let(:lib) { described_class.new("users", sql, { critical_load: "Thread_running=100" }) }
 
       it "build command with option" do
         is_expected.to receive(:sh).
