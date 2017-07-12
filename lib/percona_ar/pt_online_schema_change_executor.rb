@@ -30,10 +30,12 @@ class PerconaAr::PtOnlineSchemaChangeExecutor
   def option
     if @opt.present?
       str = ''
-      str << " --critical-load #{@opt[:critical_load]}" if @opt[:critical_load]
-      str << " --max-load #{@opt[:max_load]}" if @opt[:max_load]
+      str << " --chunk-index #{@opt[:chunk_index]}" if @opt[:chunk_index]
+      str << " --chunk-index-columns #{@opt[:chunk_index_columns]}" if opt[:chunk_index_columns]
       str << " --chunk-size #{@opt[:chunk_size]}" if @opt[:chunk_size]
       str << " --chunk-time #{@opt[:chunk_time]}" if @opt[:chunk_time]
+      str << " --critical-load #{@opt[:critical_load]}" if @opt[:critical_load]
+      str << " --max-load #{@opt[:max_load]}" if @opt[:max_load]
       str
     else
       ''
